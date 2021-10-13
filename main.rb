@@ -31,10 +31,14 @@ transaction = {
   amount: buy_btc_amount,
   price: buy_btc_price,
   type: 'limit', # 指値
-  is_production: IS_PRODUCTION
 }
 
 puts "transaction: #{transaction}"
+puts "IS_PRODUCTION: #{IS_PRODUCTION}"
+
+unless IS_PRODUCTION
+  return
+end
 
 order_res = client.create_order(
   transaction['pair'],
