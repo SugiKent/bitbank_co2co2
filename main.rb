@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+
+# cron setting
+# PATH=/sbin:/bin:/usr/sbin:/usr/bin:/home/kento/.rbenv/bin:/usr/bin/rbenv
+# 0 0 */5 * * ~/Dev/bitbank_co2co2/exe.sh >> ~/Dev/bitbank_co2co2/cron.log 2>&1
+
 require 'ruby_bitbankcc'
 require 'dotenv/load'
 
@@ -7,10 +12,6 @@ KEY = ENV['BITBANK_AUTO_KEY']
 SECRET = ENV['BITBANK_AUTO_SECRET']
 IS_PRODUCTION = ENV['IS_PRODUCTION'] == 'true' || false
 YEN_AMOUNT = ENV['YEN_AMOUNT'].to_i
-
-# 念の為5の倍数の日以外は早期 return
-# cron でも制御するが
-return unless (Time.now.day % 5).zero?
 
 puts "[#{Time.now}]"
 
