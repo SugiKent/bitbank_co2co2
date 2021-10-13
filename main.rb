@@ -7,19 +7,22 @@
 
 require 'ruby_bitbankcc'
 require 'dotenv/load'
+require './line'
+
+log = []
 
 KEY = ENV['BITBANK_AUTO_KEY']
 SECRET = ENV['BITBANK_AUTO_SECRET']
 IS_PRODUCTION = ENV['IS_PRODUCTION'] == 'true' || false
 YEN_AMOUNT = ENV['YEN_AMOUNT'].to_i
 
-puts "[#{Time.now}]"
+log << "[#{Time.now}]"
 
 client = Bitbankcc.new(KEY, SECRET)
 res = client.read_ticker('btc_jpy')
 price = JSON.parse(res.body, symbolize_names: true)
 price_data = price[:data]
-puts "price_data: #{price_data}"
+log << "price_data: #{price_data}"
 
 buy_price = price_data[:buy].to_f
 buy_btc_price = buy_price * 0.9999 # 300万なら 2,999,700
@@ -34,8 +37,8 @@ transaction = {
   type: 'limit', # 指値
 }
 
-puts "transaction: #{transaction}"
-puts "IS_PRODUCTION: #{IS_PRODUCTION}"
+log << "transaction: #{transaction}"
+log << "IS_PRODUCTION: #{IS_PRODUCTION}"
 
 unless IS_PRODUCTION
   return
@@ -49,4 +52,7 @@ order_res = client.create_order(
   transaction['type']
 )
 
-puts order_res
+log << order_res
+
+puts log
+Line.new.notify_msg(log)
